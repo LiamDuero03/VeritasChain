@@ -124,6 +124,3 @@ A successful run (either the script or the tests) confirms the following core fu
   * ✅ **PoV Mechanism:** Authority is correctly restricted; only the elected **Epoch Leader** can finalize a certification, linking network power directly to measured useful work.
 
 <!-- end list -->
-
-```
-```
