@@ -1,3 +1,6 @@
+Here is the complete content in a single Markdown block, ready for you to copy and paste directly into your `README.md` file.
+
+````markdown
 # 🛡️ VeritasChain MVP: Proof of Validation (PoV) Protocol
 
 VeritasChain is a novel blockchain protocol introducing **Proof of Validation (PoV)**, a consensus mechanism that ties validator rewards and network authority directly to verifiable, useful work.
@@ -39,3 +42,88 @@ function completeEpochChallenge(address[] calldata validatorList, uint256[] call
     currentEpochLeader = potentialLeader;
     // ...
 }
+````
+
+### 2\. Verification Authority (`CertificationRegistry.sol`)
+
+The `finalizeCertification` function ensures that **only** the currently elected leader—the validator who demonstrated the highest accuracy in the previous epoch—has the power to finalize the immutable classification:
+
+```solidity
+// ONLY callable by the elected currentEpochLeader
+function finalizeCertification(bytes32 contentHash, CertificationStatus finalStatus) 
+    public 
+{
+    // Authority Check: Reverts if the sender is not the current PoV leader
+    if (!validatorRegistry.isCurrentEpochLeader(msg.sender)) {
+        revert NotEpochLeader();
+    }
+    // ... records finalStatus (CertifiedAuthentic/CertifiedAI) ...
+}
+```
+
+This separation of concerns fulfills the core promise of PoV: **power to produce certified results is restricted to the most accurate validator.**
+
+-----
+
+## 🛠️ Setup and Installation
+
+This project requires **Node.js** and **npm**, utilizing **Hardhat** for local development and testing.
+
+### Steps
+
+1.  **Navigate to the Project Folder and Install Dependencies:**
+    ```bash
+    cd VeritasChain-MVP
+    npm install
+    ```
+2.  **Compile Smart Contracts:**
+    ```bash
+    npx hardhat compile
+    ```
+
+-----
+
+## 🔬 Running the Proof of Concept
+
+This section details how to run the Hardhat network and execute the core logic script.
+
+### 1\. Start a Local Hardhat Node
+
+Run the Hardhat network in one terminal window. This provides a local environment for deployment:
+
+```bash
+npx hardhat node
+```
+
+### 2\. Run the Deployment/Interaction Script
+
+In a **separate terminal window**, execute the main script (assuming your main script is named `run.js` or similar, located in the `scripts/` directory). This script typically deploys the contracts and runs a basic interaction sequence:
+
+```bash
+npx hardhat run scripts/run.js --network localhost
+```
+
+**Note:** *Adjust `scripts/run.js` to match the actual path and name of your main execution script.*
+
+### 3\. Comprehensive Testing
+
+The comprehensive test suite verifies the PoC's functionality, simulating the full economic and governance lifecycle from validator registration and staking to final content verification.
+
+To run all tests:
+
+```bash
+npx hardhat test
+```
+
+### Expected Successful Output
+
+A successful run (either the script or the tests) confirms the following core functionalities:
+
+  * ✅ **Validator Lifecycle:** Correct simulation of staking, unbonding, and slashing.
+  * ✅ **Economic Flow:** Accurate fee calculation, distribution (80% validator share), and the mandatory 20% token burn.
+  * ✅ **PoV Mechanism:** Authority is correctly restricted; only the elected **Epoch Leader** can finalize a certification, linking network power directly to measured useful work.
+
+<!-- end list -->
+
+```
+```
