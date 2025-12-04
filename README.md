@@ -40,7 +40,7 @@ function completeEpochChallenge(address[] calldata validatorList, uint256[] call
     currentEpochLeader = potentialLeader;
     // ...
 }
-´´´
+```
 
 ### 2\. Verification Authority (`CertificationRegistry.sol`)
 
