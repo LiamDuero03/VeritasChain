@@ -1,6 +1,4 @@
-Here is the complete content in a single Markdown block, ready for you to copy and paste directly into your `README.md` file.
 
-````markdown
 # 🛡️ VeritasChain MVP: Proof of Validation (PoV) Protocol
 
 VeritasChain is a novel blockchain protocol introducing **Proof of Validation (PoV)**, a consensus mechanism that ties validator rewards and network authority directly to verifiable, useful work.
@@ -42,7 +40,7 @@ function completeEpochChallenge(address[] calldata validatorList, uint256[] call
     currentEpochLeader = potentialLeader;
     // ...
 }
-````
+
 
 ### 2\. Verification Authority (`CertificationRegistry.sol`)
 
