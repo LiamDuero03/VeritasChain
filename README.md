@@ -39,7 +39,7 @@ The system relies on three interconnected contracts found in `contracts/`:
 
 ## 📂 Project Structure
 
-
+```text
 /contracts
   ├── VeritasToken.sol    # The Currency
   ├── MinerRegistry.sol   # The Workers
@@ -49,7 +49,7 @@ The system relies on three interconnected contracts found in `contracts/`:
   ├── miner_bot.js        # Simulates AI Miners (Registers & Listens)
   ├── aggregator.js       # Simulates the Oracle/Consensus Node
   └── user_submit.js      # Simulates a User paying for verification
-
+```
 -----
 
 ## 🛠️ Setup and Installation
