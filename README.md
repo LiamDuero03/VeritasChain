@@ -1,80 +1,69 @@
 
-# 🛡️ VeritasChain MVP: Proof of Validation (PoV) Protocol
+# 🛡️ Veritas Protocol: Decentralized AI Verification
 
-VeritasChain is a novel blockchain protocol introducing **Proof of Validation (PoV)**, a consensus mechanism that ties validator rewards and network authority directly to verifiable, useful work.
+Veritas is a blockchain-based protocol that crowdsources the detection of AI-generated content. It utilizes a **Game Theoretic "Honeypot" Mechanism** to ensure miners (validators) classify images accurately without needing a central authority to verify every result.
 
-This Minimum Viable Product (MVP), built using **Hardhat**, demonstrates the core economic and governance mechanics of the PoV lifecycle: classifying digital content as **Authentic** or **AI-Generated**.
+This Proof of Concept (PoC) demonstrates a hybrid architecture:
+1.  **On-Chain:** Trustless payments, staking, and immutable record-keeping.
+2.  **Off-Chain:** High-performance AI processing and "Honeypot" consensus logic.
 
 ---
 
-## 💡 Protocol Core Mechanics
+## 🧠 Core Mechanics: The Honeypot System
 
-The PoV mechanism simulates staking, transaction fees, rewards, and a competitive leader election process to ensure utility and integrity within the network.
+The protocol solves the "lazy validator" problem using a **Double-Blind** test:
 
-### 📜 Contract Architecture
+1.  **Submission:** A user pays **$VRT** tokens to verify an image.
+2.  **The Bundle:** An off-chain **Aggregator** creates a task bundle containing:
+    * The User's Image (Unknown state).
+    * X "Honeypot" Images (Known state: AI or Real).
+3.  **Mining:** Miners classify the *entire* bundle. They do not know which image is the target and which are the honeypots.
+4.  **Consensus:**
+    * Miners who fail the honeypots are ignored (and can be slashed).
+    * Miners who pass are assigned a **Confidence Weight**.
+    * The final verdict is a **Weighted Average** of the passing miners.
 
-The MVP utilizes three interconnected contracts to model the full lifecycle of a content certification request:
+---
 
-| Contract | Core Role | PoV Mechanism Demonstrated |
+## 📜 Smart Contract Architecture
+
+The system relies on three interconnected contracts found in `contracts/`:
+
+| Contract | Role | Key Functionality |
 | :--- | :--- | :--- |
-| `VERIToken.sol` | **Native Currency (ERC-20)** | Handles all financial flows: staking, fees, rewards, and the Token Burn mechanism. |
-| `ValidatorRegistry.sol` | **Economic Security & Leader Selection** | Manages validator stake, enforces slashing, records accuracy, and simulates the competitive Epoch/Leader Election based on recorded performance. |
-| `CertificationRegistry.sol` | **Service & Verification Layer** | Processes user fee payments, stores immutable content hashes, and enables the elected Leader to finalize the content classification. |
+| `VeritasToken.sol` | **Economy** | ERC-20 Standard. Used for staking (skin-in-the-game) and fee payments. Includes `burn` logic for slashing bad actors. |
+| `MinerRegistry.sol` | **Governance** | Manages miner identities. Enforces minimum stake requirements. Tracks reputation scores and handles slashing logic. |
+| `VeritasCore.sol` | **Orchestration** | The central ledger. Receives user requests, holds fees, and accepts the final consensus result from the Aggregator to distribute rewards. |
 
 ---
 
-## 🔑 Key PoV Logic Demonstration
+## 📂 Project Structure
 
-The PoC links validator **performance (accuracy)** to **network authority** through a decentralized, merit-based selection process.
 
-### 1. Leader Election (`ValidatorRegistry.sol`)
-
-The `completeEpochChallenge` function simulates the off-chain PoV work results (content classification accuracy) and elects a new leader:
-
-```solidity
-// Called by Owner to simulate off-chain results and elect a new leader
-function completeEpochChallenge(address[] calldata validatorList, uint256[] calldata accuracyScores) 
-    public onlyOwner 
-{
-    // ... Calculates maxScore and selects highest-accuracy/highest-stake validator ...
-    currentEpochLeader = potentialLeader;
-    // ...
-}
-```
-
-### 2\. Verification Authority (`CertificationRegistry.sol`)
-
-The `finalizeCertification` function ensures that **only** the currently elected leader—the validator who demonstrated the highest accuracy in the previous epoch—has the power to finalize the immutable classification:
-
-```solidity
-// ONLY callable by the elected currentEpochLeader
-function finalizeCertification(bytes32 contentHash, CertificationStatus finalStatus) 
-    public 
-{
-    // Authority Check: Reverts if the sender is not the current PoV leader
-    if (!validatorRegistry.isCurrentEpochLeader(msg.sender)) {
-        revert NotEpochLeader();
-    }
-    // ... records finalStatus (CertifiedAuthentic/CertifiedAI) ...
-}
-```
-
-This separation of concerns fulfills the core promise of PoV: **power to produce certified results is restricted to the most accurate validator.**
+/contracts
+  ├── VeritasToken.sol    # The Currency
+  ├── MinerRegistry.sol   # The Workers
+  └── VeritasCore.sol     # The Manager
+/scripts
+  ├── deploy.js           # Deploys the suite
+  ├── miner_bot.js        # Simulates AI Miners (Registers & Listens)
+  ├── aggregator.js       # Simulates the Oracle/Consensus Node
+  └── user_submit.js      # Simulates a User paying for verification
 
 -----
 
 ## 🛠️ Setup and Installation
 
-This project requires **Node.js** and **npm**, utilizing **Hardhat** for local development and testing.
+1.  **Install Dependencies:**
+    This project uses Hardhat and OpenZeppelin.
 
-### Steps
-
-1.  **Navigate to the Project Folder and Install Dependencies:**
     ```bash
-    cd VeritasChain-MVP
     npm install
+    npm install @openzeppelin/contracts
     ```
-2.  **Compile Smart Contracts:**
+
+2.  **Compile Contracts:**
+
     ```bash
     npx hardhat compile
     ```
@@ -83,42 +72,78 @@ This project requires **Node.js** and **npm**, utilizing **Hardhat** for local d
 
 ## 🔬 Running the Proof of Concept
 
-This section details how to run the Hardhat network and execute the core logic script.
+This PoC simulates a live network with multiple actors. You will need **4 separate terminal windows** to see the full flow.
 
-### 1\. Start a Local Hardhat Node
+### Step 1: Start the Local Blockchain
 
-Run the Hardhat network in one terminal window. This provides a local environment for deployment:
+**[Terminal 1]**
+Start the Hardhat node. This creates a local blockchain and 20 test wallets.
 
 ```bash
 npx hardhat node
 ```
 
-### 2\. Run the Deployment/Interaction Script
+*Keep this terminal running.*
 
-In a **separate terminal window**, execute the main script (assuming your main script is named `run.js` or similar, located in the `scripts/` directory). This script typically deploys the contracts and runs a basic interaction sequence:
+### Step 2: Deploy Contracts
 
-```bash
-npx hardhat run scripts/run.js --network localhost
-```
-
-**Note:** *Adjust `scripts/run.js` to match the actual path and name of your main execution script.*
-
-### 3\. Comprehensive Testing
-
-The comprehensive test suite verifies the PoC's functionality, simulating the full economic and governance lifecycle from validator registration and staking to final content verification.
-
-To run all tests:
+**[Terminal 2]**
+Deploy the smart contracts.
 
 ```bash
-npx hardhat test
+npx hardhat run scripts/deploy.js --network localhost
 ```
 
-### Expected Successful Output
+⚠️ **IMPORTANT:** Copy the `VeritasToken`, `MinerRegistry`, and `VeritasCore` addresses output by this script. You **must** paste them into the top of `miner_bot.js`, `aggregator.js`, and `user_submit.js` before proceeding.
 
-A successful run (either the script or the tests) confirms the following core functionalities:
+### Step 3: Start the Miners
 
-  * ✅ **Validator Lifecycle:** Correct simulation of staking, unbonding, and slashing.
-  * ✅ **Economic Flow:** Accurate fee calculation, distribution (80% validator share), and the mandatory 20% token burn.
-  * ✅ **PoV Mechanism:** Authority is correctly restricted; only the elected **Epoch Leader** can finalize a certification, linking network power directly to measured useful work.
+**[Terminal 2]**
+Run the bot script. This simulates 3 miners:
+
+  * Miner A (High Accuracy)
+  * Miner B (High Accuracy)
+  * Miner C (Malicious/Low Accuracy)
+    It will stake tokens, register them, and wait for work.
 
 <!-- end list -->
+
+```bash
+npx hardhat run scripts/miner_bot.js --network localhost
+```
+
+### Step 4: Start the Aggregator
+
+**[Terminal 3]**
+Run the aggregator node. This listens for user requests, distributes "Honeypot" bundles, and calculates consensus.
+
+```bash
+npx hardhat run scripts/aggregator.js --network localhost
+```
+
+### Step 5: Submit a Request (The User)
+
+**[Terminal 4]**
+Simulate a user paying $VRT to verify an image.
+
+```bash
+npx hardhat run scripts/user_submit.js --network localhost
+```
+
+-----
+
+## ✅ Expected Output Flow
+
+1.  **Terminal 4 (User):** "Request Submitted\!"
+2.  **Terminal 2 (Miners):** "[MINER BOT] Detected Request... Waiting for bundle."
+3.  **Terminal 3 (Aggregator):**
+      * `[NEW REQUEST DETECTED]`
+      * `Dispatching to 3 miners...`
+      * `Miner A: Pass` | `Miner B: Pass` | `Miner C: REJECTED (Low Accuracy)`
+      * `> Consensus Reached: AI GENERATED`
+      * `[TX] Result Finalized on-chain`
+
+This proves the **Economic Flow** (Fees -\> Rewards) and the **Consensus Logic** (Filtering bad actors via Honeypots).
+
+```
+```
