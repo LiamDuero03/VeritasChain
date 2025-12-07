@@ -6,7 +6,7 @@ const POOL_PATH = path.join(__dirname, "../data/request_pool.json");
 const HONEYPOT_PATH = path.join(__dirname, "../data/honeypot.json");
 
 async function main() {
-  console.log("🚀 STARTING VERITAS SIMULATION V3: BLIND BATCHING 🚀\n");
+  console.log("🚀 STARTING VERITAS SIMULATION V3: BLIND BATCHING + ON-CHAIN REPUTATION 🚀\n");
 
   // ====================================================
   // 0. CONFIGURATION
@@ -72,7 +72,6 @@ async function main() {
       const chainRequestId = core.interface.parseLog(log).args[0];
 
       // 2. AGGREGATOR CREATES THE "BLIND BATCH"
-      // We pick random honeypots to mix with the user image
       const batchHoneypots = [];
       for(let i=0; i<HONEYPOT_COUNT; i++) {
           batchHoneypots.push(honeypotData[Math.floor(Math.random() * honeypotData.length)]);
@@ -81,14 +80,10 @@ async function main() {
       console.log(`   📦 Batch Created: 1 User Image + ${HONEYPOT_COUNT} Blind Honeypots`);
 
       // 3. MINERS PROCESS THE BATCH
-      // Each miner returns results for ALL 5 images (4 honeypots + 1 user image)
-      // They don't know which is which.
-      
       let minerResults = [];
 
       for (const miner of minerWallets) {
           // Miner Skill Simulation (Randomized)
-          // Some miners are smarter (higher base accuracy)
           const minerBaseAccuracy = 0.6 + (Math.random() * 0.35); // 60% - 95% accuracy
 
           // A. Grade the Honeypots
@@ -99,62 +94,74 @@ async function main() {
           }
           
           // B. Grade the User Image
-          // (In reality, they just submit a vote, we verify it against ground truth later)
           const getsUserImageRight = Math.random() < minerBaseAccuracy;
           const voteOnUserImage = getsUserImageRight ? userReq.trueLabel : !userReq.trueLabel;
 
           minerResults.push({
               address: miner.address,
-              accuracy: honeypotScore / HONEYPOT_COUNT, // e.g., 0.75
+              accuracy: honeypotScore / HONEYPOT_COUNT, 
               vote: voteOnUserImage,
-              rawScore: honeypotScore
+              rawScore: honeypotScore,
+              wallet: miner // Keep reference for later
           });
       }
 
       // 4. AGGREGATOR SELECTS THE "COMMITTEE"
-      // Sort miners by their Honeypot Accuracy (High -> Low)
       minerResults.sort((a, b) => b.accuracy - a.accuracy);
-
-      // Take top 10
       const committee = minerResults.slice(0, COMMITTEE_SIZE);
       console.log(`   🏆 Top ${COMMITTEE_SIZE} miners selected. Accuracy range: ${(committee[committee.length-1].accuracy*100).toFixed(0)}% - ${(committee[0].accuracy*100).toFixed(0)}%`);
 
 
       // 5. CALCULATE WEIGHTED CONSENSUS
-      // Formula: Sum(Vote * Accuracy) / Sum(Accuracy)
-      // Vote is converted: true(AI)=1, false(Real)=-1 for calculation, or just weighted sums
-      
       let aiWeight = 0;
       let realWeight = 0;
-      let winningMiners = []; // List of miners to pay (those who made the cut)
+      let winningMiners = []; 
 
       for (const m of committee) {
           winningMiners.push(m.address);
-          
-          if (m.vote === true) { // Voted AI
-              aiWeight += m.accuracy;
-          } else { // Voted Real
-              realWeight += m.accuracy;
-          }
+          if (m.vote === true) aiWeight += m.accuracy;
+          else realWeight += m.accuracy;
       }
 
       const totalWeight = aiWeight + realWeight;
       const confidenceScore = Math.floor((aiWeight / totalWeight) * 100);
       const finalVerdictIsAI = aiWeight > realWeight;
 
-      console.log(`   ⚖️  Weighted Votes -> AI: ${aiWeight.toFixed(2)} | Real: ${realWeight.toFixed(2)}`);
+      console.log(`   ⚖️  Votes -> AI: ${aiWeight.toFixed(2)} | Real: ${realWeight.toFixed(2)}`);
       console.log(`   > Verdict: ${finalVerdictIsAI ? "AI 🤖" : "REAL 📸"} (Confidence: ${confidenceScore}%)`);
 
 
-      // 6. FINALIZE ON CHAIN
+      // 6. FINALIZE ON CHAIN (PAYOUTS)
       await core.connect(aggregator).finalizeResult(
           chainRequestId,
           finalVerdictIsAI,
           confidenceScore,
           winningMiners
       );
+      console.log(`   ✅ Payouts Finalized.`);
+
+
+      // ====================================================
+      // 7. NEW: UPDATE ON-CHAIN REPUTATION
+      // ====================================================
+      console.log(`   📊 Updating On-Chain Reputation...`);
       
-      console.log(`   ✅ Finalized on Blockchain.`);
+      // We loop through ALL miners to update their permanent records
+      for (const result of minerResults) {
+          // Rule: Must get at least 75% (3 out of 4) honeypots right to "Pass"
+          const passedHoneypot = result.accuracy >= 0.75;
+          
+          // Call the Registry Contract!
+          // Note: 'deployer' owns the registry in this script, so we use 'deployer' to call it.
+          await registry.connect(deployer).updateMinerPerformance(result.address, passedHoneypot);
+      }
+
+      // 🔍 VERIFICATION SPOT CHECK
+      // Let's read the blockchain to prove it worked for the first miner in the list
+      const checkMiner = minerResults[0];
+      const stats = await registry.getMinerStats(checkMiner.address);
+      console.log(`      > [On-Chain Check] Miner ${checkMiner.address.slice(0,6)}... Score: ${stats[0]} | Wins: ${stats[1]} | Losses: ${stats[2]}`);
+
 
       // Update JSON
       userReq.status = "verified";

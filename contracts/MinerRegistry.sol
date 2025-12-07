@@ -6,9 +6,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title Miner Registry
- * @dev Manages miner identities, staking, and reputation.
+ * @dev Manages miner identities, staking, and on-chain reputation.
  * - Miners must stake VRT to participate.
- * - The 'Owner' (Aggregator/Core Contract) can slash stakes for poor performance.
+ * - The 'Owner' (Aggregator/Core) automatically updates reputation based on performance.
  */
 contract MinerRegistry is Ownable {
     
@@ -20,18 +20,20 @@ contract MinerRegistry is Ownable {
     struct Miner {
         bool isRegistered;
         uint256 stakedAmount;
-        uint256 reputationScore; // 0 to 100
+        uint256 reputationScore;       // 0 to 100 (Current "Credit Score")
         uint256 totalRequestsProcessed;
+        uint256 successfulJobs;        // Permanent Record of Wins
+        uint256 failedJobs;            // Permanent Record of Losses
     }
 
     mapping(address => Miner) public miners;
-    address[] public minerList; // To iterate/select miners off-chain
+    address[] public minerList; 
 
     // Events
     event MinerRegistered(address indexed miner, uint256 amount);
     event MinerDeregistered(address indexed miner, uint256 amount);
     event MinerSlashed(address indexed miner, uint256 amount, string reason);
-    event ReputationUpdated(address indexed miner, uint256 newScore);
+    event ReputationUpdated(address indexed miner, uint256 newScore, bool passedHoneypot);
 
     constructor(address _tokenAddress, uint256 _minStake) Ownable(msg.sender) {
         token = VeritasToken(_tokenAddress);
@@ -40,22 +42,21 @@ contract MinerRegistry is Ownable {
 
     /**
      * @dev Allows a user to register as a miner by staking VRT.
-     * User must have approved the contract to spend their tokens first.
      */
     function registerMiner(uint256 _amount) external {
         require(_amount >= minimumStake, "Insufficient stake amount");
         require(!miners[msg.sender].isRegistered, "Already registered");
 
-        // Transfer tokens from Miner to this Contract
-        // NOTE: The miner must call `approve()` on the Token contract first!
         bool success = token.transferFrom(msg.sender, address(this), _amount);
         require(success, "Token transfer failed");
 
         miners[msg.sender] = Miner({
             isRegistered: true,
             stakedAmount: _amount,
-            reputationScore: 100, // Start with perfect score (or neutral 50)
-            totalRequestsProcessed: 0
+            reputationScore: 50, // Start neutral (50/100) instead of perfect
+            totalRequestsProcessed: 0,
+            successfulJobs: 0,
+            failedJobs: 0
         });
 
         minerList.push(msg.sender);
@@ -64,19 +65,15 @@ contract MinerRegistry is Ownable {
 
     /**
      * @dev Allows a miner to leave the network and retrieve their stake.
-     * Can only withdraw if they are not currently locked (logic can be expanded).
      */
     function deregisterMiner() external {
         require(miners[msg.sender].isRegistered, "Not a registered miner");
         
         uint256 amountToReturn = miners[msg.sender].stakedAmount;
         
-        // Reset miner data
         delete miners[msg.sender];
 
-        // Remove from list (swap and pop method for gas efficiency)
-        // Note: For a simple PoC, we might just leave the address or filter off-chain
-        // This is a simplified removal:
+        // Simplified array removal
         for (uint i = 0; i < minerList.length; i++) {
             if (minerList[i] == msg.sender) {
                 minerList[i] = minerList[minerList.length - 1];
@@ -85,7 +82,6 @@ contract MinerRegistry is Ownable {
             }
         }
 
-        // Return tokens
         bool success = token.transfer(msg.sender, amountToReturn);
         require(success, "Token transfer failed");
 
@@ -97,19 +93,50 @@ contract MinerRegistry is Ownable {
     // ==========================================
 
     /**
-     * @dev Called by the Aggregator (Owner) when a miner fails the Honeypot check repeatedly.
-     * Slashed tokens are burned to reduce supply (deflationary).
+     * @dev Called by Aggregator/Core when a job is finished. 
+     * This moves the "Reputation Logic" ON-CHAIN.
+     */
+    function updateMinerPerformance(address _minerAddress, bool _passedHoneypot) external onlyOwner {
+        require(miners[_minerAddress].isRegistered, "Miner not found");
+        
+        Miner storage m = miners[_minerAddress];
+        m.totalRequestsProcessed++;
+
+        if (_passedHoneypot) {
+            // --- SUCCESS LOGIC ---
+            m.successfulJobs++;
+            
+            // Gain +1 reputation, capped at 100
+            if (m.reputationScore < 100) {
+                m.reputationScore += 1;
+            }
+        } else {
+            // --- FAILURE LOGIC ---
+            m.failedJobs++;
+
+            // Lose -5 reputation (Heavy penalty for getting it wrong)
+            // Safety check to prevent underflow (going below 0)
+            if (m.reputationScore >= 5) {
+                m.reputationScore -= 5;
+            } else {
+                m.reputationScore = 0;
+            }
+        }
+        
+        emit ReputationUpdated(_minerAddress, m.reputationScore, _passedHoneypot);
+    }
+
+    /**
+     * @dev Called by Aggregator to slash tokens for malicious behavior.
      */
     function slashMiner(address _minerAddress, uint256 _amount, string memory _reason) external onlyOwner {
         require(miners[_minerAddress].isRegistered, "Miner not found");
         require(miners[_minerAddress].stakedAmount >= _amount, "Stake too low to slash");
 
         miners[_minerAddress].stakedAmount -= _amount;
-
-        // Burn the slashed tokens
         token.burn(_amount);
 
-        // If stake drops below minimum, kick them out
+        // Auto-kick if stake is too low
         if (miners[_minerAddress].stakedAmount < minimumStake) {
             miners[_minerAddress].isRegistered = false;
         }
@@ -118,20 +145,16 @@ contract MinerRegistry is Ownable {
     }
 
     /**
-     * @dev Updates the reputation score based on Honeypot performance.
+     * @dev View function for DApps to show miner stats
      */
-    function updateReputation(address _minerAddress, uint256 _newScore) external onlyOwner {
-        require(miners[_minerAddress].isRegistered, "Miner not found");
-        miners[_minerAddress].reputationScore = _newScore;
-        miners[_minerAddress].totalRequestsProcessed++;
-        
-        emit ReputationUpdated(_minerAddress, _newScore);
+    function getMinerStats(address _miner) external view returns (uint256 score, uint256 wins, uint256 losses) {
+        return (miners[_miner].reputationScore, miners[_miner].successfulJobs, miners[_miner].failedJobs);
     }
 
-    /**
-     * @dev Helper for the front-end to see if a miner is eligible
-     */
     function isMinerEligible(address _miner) external view returns (bool) {
-        return miners[_miner].isRegistered && miners[_miner].stakedAmount >= minimumStake;
+        // Example: Must be registered AND have a reputation score > 20 to work
+        return miners[_miner].isRegistered && 
+               miners[_miner].stakedAmount >= minimumStake &&
+               miners[_miner].reputationScore > 20; 
     }
 }
