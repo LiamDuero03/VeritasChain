@@ -1,0 +1,162 @@
+[
+  {
+    "id": "req_101",
+    "hash": "Qm_USER_UPLOAD_PROFILE_PIC",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserA...",
+    "verdict": "REAL"
+  },
+  {
+    "id": "req_102",
+    "hash": "Qm_USER_UPLOAD_CRYPTO_SCAM_BANNER",
+    "status": "verified",
+    "trueLabel": true,
+    "submitter": "0xUserB...",
+    "verdict": "AI"
+  },
+  {
+    "id": "req_103",
+    "hash": "Qm_USER_UPLOAD_FAMILY_DOG",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserC...",
+    "verdict": "REAL"
+  },
+  {
+    "id": "req_104",
+    "hash": "Qm_USER_UPLOAD_POLITICAL_DEEPFAKE",
+    "status": "verified",
+    "trueLabel": true,
+    "submitter": "0xUserD...",
+    "verdict": "AI"
+  },
+  {
+    "id": "req_105",
+    "hash": "Qm_USER_UPLOAD_NFT_ART",
+    "status": "verified",
+    "trueLabel": true,
+    "submitter": "0xUserE...",
+    "verdict": "AI"
+  },
+  {
+    "id": "req_106",
+    "hash": "Qm_USER_UPLOAD_DRIVER_LICENSE",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserF...",
+    "verdict": "REAL"
+  },
+  {
+    "id": "req_107",
+    "hash": "Qm_USER_UPLOAD_CCTV_FOOTAGE_FRAME",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserG...",
+    "verdict": "REAL"
+  },
+  {
+    "id": "req_108",
+    "hash": "Qm_USER_UPLOAD_CEO_AUDIO_WAVEFORM",
+    "status": "verified",
+    "trueLabel": true,
+    "submitter": "0xUserH...",
+    "verdict": "AI"
+  },
+  {
+    "id": "req_109",
+    "hash": "Qm_USER_UPLOAD_VACATION_BEACH",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserI...",
+    "verdict": "REAL"
+  },
+  {
+    "id": "req_110",
+    "hash": "Qm_USER_UPLOAD_STOCK_MARKET_GRAPH",
+    "status": "verified",
+    "trueLabel": true,
+    "submitter": "0xUserJ...",
+    "verdict": "AI"
+  },
+  {
+    "id": "req_111",
+    "hash": "Qm_USER_UPLOAD_INSTAGRAM_FILTERED",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserK...",
+    "verdict": "REAL"
+  },
+  {
+    "id": "req_112",
+    "hash": "Qm_USER_UPLOAD_MIDJOURNEY_V6_TEST",
+    "status": "verified",
+    "trueLabel": true,
+    "submitter": "0xUserL...",
+    "verdict": "AI"
+  },
+  {
+    "id": "req_113",
+    "hash": "Qm_USER_UPLOAD_OLD_SCANNED_PHOTO",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserM...",
+    "verdict": "REAL"
+  },
+  {
+    "id": "req_114",
+    "hash": "Qm_USER_UPLOAD_DEEPFAKE_PORN_BOT",
+    "status": "verified",
+    "trueLabel": true,
+    "submitter": "0xUserN...",
+    "verdict": "AI"
+  },
+  {
+    "id": "req_115",
+    "hash": "Qm_USER_UPLOAD_NEWS_EVENT_CROWD",
+    "status": "verified",
+    "trueLabel": true,
+    "submitter": "0xUserO...",
+    "verdict": "AI"
+  },
+  {
+    "id": "req_116",
+    "hash": "Qm_USER_UPLOAD_RECEIPT_SCAN",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserP...",
+    "verdict": "REAL"
+  },
+  {
+    "id": "req_117",
+    "hash": "Qm_USER_UPLOAD_AI_INFLUENCER",
+    "status": "verified",
+    "trueLabel": true,
+    "submitter": "0xUserQ...",
+    "verdict": "AI"
+  },
+  {
+    "id": "req_118",
+    "hash": "Qm_USER_UPLOAD_DASHCAM_VIDEO_FRAME",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserR...",
+    "verdict": "REAL"
+  },
+  {
+    "id": "req_119",
+    "hash": "Qm_USER_UPLOAD_GAME_SCREENSHOT",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserS...",
+    "verdict": "REAL"
+  },
+  {
+    "id": "req_120",
+    "hash": "Qm_USER_UPLOAD_VOICE_MEMO_SPECTRO",
+    "status": "verified",
+    "trueLabel": false,
+    "submitter": "0xUserT...",
+    "verdict": "REAL"
+  }
+]

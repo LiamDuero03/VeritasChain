@@ -1,0 +1,107 @@
+[
+  {
+    "id": "hp_001",
+    "hash": "Qm_HONEYPOT_REAL_NATURE_01",
+    "trueLabel": false,
+    "difficulty": "easy",
+    "description": "High res photo of a forest, clear lighting"
+  },
+  {
+    "id": "hp_002",
+    "hash": "Qm_HONEYPOT_DEEPFAKE_CELEB_01",
+    "trueLabel": true,
+    "difficulty": "medium",
+    "description": "Celebrity face swap, slight artifact on hairline"
+  },
+  {
+    "id": "hp_003",
+    "hash": "Qm_HONEYPOT_AI_HANDS_01",
+    "trueLabel": true,
+    "difficulty": "easy",
+    "description": "Person with 6 fingers, obvious Midjourney v4 error"
+  },
+  {
+    "id": "hp_004",
+    "hash": "Qm_HONEYPOT_REAL_SELFIE_01",
+    "trueLabel": false,
+    "difficulty": "easy",
+    "description": "Grainy selfie in low light, sensor noise visible"
+  },
+  {
+    "id": "hp_005",
+    "hash": "Qm_HONEYPOT_AI_ARCH_01",
+    "trueLabel": true,
+    "difficulty": "hard",
+    "description": "AI generated modern house, perfect lighting, strange shadow angle"
+  },
+  {
+    "id": "hp_006",
+    "hash": "Qm_HONEYPOT_REAL_DOC_01",
+    "trueLabel": false,
+    "difficulty": "medium",
+    "description": "Scanned PDF document, text is slightly blurry"
+  },
+  {
+    "id": "hp_007",
+    "hash": "Qm_HONEYPOT_AI_TEXT_01",
+    "trueLabel": true,
+    "difficulty": "medium",
+    "description": "Street sign with gibberish alien text (AI artifact)"
+  },
+  {
+    "id": "hp_008",
+    "hash": "Qm_HONEYPOT_REAL_CAT_01",
+    "trueLabel": false,
+    "difficulty": "easy",
+    "description": "Cat sleeping on sofa, fur texture is organic"
+  },
+  {
+    "id": "hp_009",
+    "hash": "Qm_HONEYPOT_DEEPFAKE_VOICE_SPECTRO_01",
+    "trueLabel": true,
+    "difficulty": "hard",
+    "description": "Spectrogram of a deepfaked voice, missing high freq data"
+  },
+  {
+    "id": "hp_010",
+    "hash": "Qm_HONEYPOT_REAL_CROWD_01",
+    "trueLabel": false,
+    "difficulty": "hard",
+    "description": "Crowd shot, all faces look consistent and unique"
+  },
+  {
+    "id": "hp_011",
+    "hash": "Qm_HONEYPOT_AI_PAINTING_01",
+    "trueLabel": true,
+    "difficulty": "easy",
+    "description": "Oil painting style, brush strokes don't match physics"
+  },
+  {
+    "id": "hp_012",
+    "hash": "Qm_HONEYPOT_REAL_FOOD_01",
+    "trueLabel": false,
+    "difficulty": "medium",
+    "description": "Plate of food, steam and messy edges look natural"
+  },
+  {
+    "id": "hp_013",
+    "hash": "Qm_HONEYPOT_AI_PRODUCT_01",
+    "trueLabel": true,
+    "difficulty": "hard",
+    "description": "Product render, reflection on bottle is impossible"
+  },
+  {
+    "id": "hp_014",
+    "hash": "Qm_HONEYPOT_REAL_SPORT_01",
+    "trueLabel": false,
+    "difficulty": "medium",
+    "description": "Sports photo, motion blur is consistent with camera speed"
+  },
+  {
+    "id": "hp_015",
+    "hash": "Qm_HONEYPOT_AI_ANIME_01",
+    "trueLabel": true,
+    "difficulty": "easy",
+    "description": "Anime style character, mismatched eyes"
+  }
+]

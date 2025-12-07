@@ -1,0 +1,142 @@
+[
+  {
+    "id": "req_101",
+    "hash": "Qm_USER_UPLOAD_PROFILE_PIC",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserA..."
+  },
+  {
+    "id": "req_102",
+    "hash": "Qm_USER_UPLOAD_CRYPTO_SCAM_BANNER",
+    "status": "pending",
+    "trueLabel": true,
+    "submitter": "0xUserB..."
+  },
+  {
+    "id": "req_103",
+    "hash": "Qm_USER_UPLOAD_FAMILY_DOG",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserC..."
+  },
+  {
+    "id": "req_104",
+    "hash": "Qm_USER_UPLOAD_POLITICAL_DEEPFAKE",
+    "status": "pending",
+    "trueLabel": true,
+    "submitter": "0xUserD..."
+  },
+  {
+    "id": "req_105",
+    "hash": "Qm_USER_UPLOAD_NFT_ART",
+    "status": "pending",
+    "trueLabel": true,
+    "submitter": "0xUserE..."
+  },
+  {
+    "id": "req_106",
+    "hash": "Qm_USER_UPLOAD_DRIVER_LICENSE",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserF..."
+  },
+  {
+    "id": "req_107",
+    "hash": "Qm_USER_UPLOAD_CCTV_FOOTAGE_FRAME",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserG..."
+  },
+  {
+    "id": "req_108",
+    "hash": "Qm_USER_UPLOAD_CEO_AUDIO_WAVEFORM",
+    "status": "pending",
+    "trueLabel": true,
+    "submitter": "0xUserH..."
+  },
+  {
+    "id": "req_109",
+    "hash": "Qm_USER_UPLOAD_VACATION_BEACH",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserI..."
+  },
+  {
+    "id": "req_110",
+    "hash": "Qm_USER_UPLOAD_STOCK_MARKET_GRAPH",
+    "status": "pending",
+    "trueLabel": true,
+    "submitter": "0xUserJ..."
+  },
+  {
+    "id": "req_111",
+    "hash": "Qm_USER_UPLOAD_INSTAGRAM_FILTERED",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserK..."
+  },
+  {
+    "id": "req_112",
+    "hash": "Qm_USER_UPLOAD_MIDJOURNEY_V6_TEST",
+    "status": "pending",
+    "trueLabel": true,
+    "submitter": "0xUserL..."
+  },
+  {
+    "id": "req_113",
+    "hash": "Qm_USER_UPLOAD_OLD_SCANNED_PHOTO",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserM..."
+  },
+  {
+    "id": "req_114",
+    "hash": "Qm_USER_UPLOAD_DEEPFAKE_PORN_BOT",
+    "status": "pending",
+    "trueLabel": true,
+    "submitter": "0xUserN..."
+  },
+  {
+    "id": "req_115",
+    "hash": "Qm_USER_UPLOAD_NEWS_EVENT_CROWD",
+    "status": "pending",
+    "trueLabel": true,
+    "submitter": "0xUserO..."
+  },
+  {
+    "id": "req_116",
+    "hash": "Qm_USER_UPLOAD_RECEIPT_SCAN",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserP..."
+  },
+  {
+    "id": "req_117",
+    "hash": "Qm_USER_UPLOAD_AI_INFLUENCER",
+    "status": "pending",
+    "trueLabel": true,
+    "submitter": "0xUserQ..."
+  },
+  {
+    "id": "req_118",
+    "hash": "Qm_USER_UPLOAD_DASHCAM_VIDEO_FRAME",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserR..."
+  },
+  {
+    "id": "req_119",
+    "hash": "Qm_USER_UPLOAD_GAME_SCREENSHOT",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserS..."
+  },
+  {
+    "id": "req_120",
+    "hash": "Qm_USER_UPLOAD_VOICE_MEMO_SPECTRO",
+    "status": "pending",
+    "trueLabel": false,
+    "submitter": "0xUserT..."
+  }
+]
