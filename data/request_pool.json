@@ -5,8 +5,7 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserA...",
-    "verdict": "REAL",
-    "confidence": 81
+    "verdict": "REAL"
   },
   {
     "id": "req_102",
@@ -14,8 +13,7 @@
     "status": "verified",
     "trueLabel": true,
     "submitter": "0xUserB...",
-    "verdict": "AI",
-    "confidence": 100
+    "verdict": "AI"
   },
   {
     "id": "req_103",
@@ -23,8 +21,7 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserC...",
-    "verdict": "AI",
-    "confidence": 57
+    "verdict": "REAL"
   },
   {
     "id": "req_104",
@@ -32,8 +29,7 @@
     "status": "verified",
     "trueLabel": true,
     "submitter": "0xUserD...",
-    "verdict": "AI",
-    "confidence": 75
+    "verdict": "REAL"
   },
   {
     "id": "req_105",
@@ -41,8 +37,7 @@
     "status": "verified",
     "trueLabel": true,
     "submitter": "0xUserE...",
-    "verdict": "AI",
-    "confidence": 100
+    "verdict": "AI"
   },
   {
     "id": "req_106",
@@ -50,8 +45,7 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserF...",
-    "verdict": "REAL",
-    "confidence": 50
+    "verdict": "REAL"
   },
   {
     "id": "req_107",
@@ -59,8 +53,7 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserG...",
-    "verdict": "REAL",
-    "confidence": 80
+    "verdict": "REAL"
   },
   {
     "id": "req_108",
@@ -68,8 +61,7 @@
     "status": "verified",
     "trueLabel": true,
     "submitter": "0xUserH...",
-    "verdict": "AI",
-    "confidence": 75
+    "verdict": "AI"
   },
   {
     "id": "req_109",
@@ -77,8 +69,7 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserI...",
-    "verdict": "REAL",
-    "confidence": 100
+    "verdict": "REAL"
   },
   {
     "id": "req_110",
@@ -86,8 +77,7 @@
     "status": "verified",
     "trueLabel": true,
     "submitter": "0xUserJ...",
-    "verdict": "AI",
-    "confidence": 77
+    "verdict": "AI"
   },
   {
     "id": "req_111",
@@ -95,8 +85,7 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserK...",
-    "verdict": "REAL",
-    "confidence": 71
+    "verdict": "REAL"
   },
   {
     "id": "req_112",
@@ -104,8 +93,7 @@
     "status": "verified",
     "trueLabel": true,
     "submitter": "0xUserL...",
-    "verdict": "AI",
-    "confidence": 100
+    "verdict": "AI"
   },
   {
     "id": "req_113",
@@ -113,8 +101,7 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserM...",
-    "verdict": "REAL",
-    "confidence": 50
+    "verdict": "REAL"
   },
   {
     "id": "req_114",
@@ -122,8 +109,7 @@
     "status": "verified",
     "trueLabel": true,
     "submitter": "0xUserN...",
-    "verdict": "AI",
-    "confidence": 80
+    "verdict": "AI"
   },
   {
     "id": "req_115",
@@ -131,8 +117,7 @@
     "status": "verified",
     "trueLabel": true,
     "submitter": "0xUserO...",
-    "verdict": "AI",
-    "confidence": 100
+    "verdict": "AI"
   },
   {
     "id": "req_116",
@@ -140,8 +125,7 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserP...",
-    "verdict": "REAL",
-    "confidence": 100
+    "verdict": "REAL"
   },
   {
     "id": "req_117",
@@ -149,8 +133,7 @@
     "status": "verified",
     "trueLabel": true,
     "submitter": "0xUserQ...",
-    "verdict": "AI",
-    "confidence": 72
+    "verdict": "AI"
   },
   {
     "id": "req_118",
@@ -158,8 +141,7 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserR...",
-    "verdict": "REAL",
-    "confidence": 76
+    "verdict": "REAL"
   },
   {
     "id": "req_119",
@@ -167,8 +149,7 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserS...",
-    "verdict": "REAL",
-    "confidence": 100
+    "verdict": "REAL"
   },
   {
     "id": "req_120",
@@ -176,7 +157,6 @@
     "status": "verified",
     "trueLabel": false,
     "submitter": "0xUserT...",
-    "verdict": "REAL",
-    "confidence": 62
+    "verdict": "REAL"
   }
 ]
