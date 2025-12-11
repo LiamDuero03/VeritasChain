@@ -107,6 +107,10 @@ contract VeritasCore is Ownable, ReentrancyGuard {
         Request storage req = requests[_requestId];
         require(!req.isFinalized, "Request already finalized");
 
+
+        // SAFETY CHECK: Prevents Gas Limit crashes
+        require(_winningMiners.length <= 50, "Batch too large for one tx");
+        
         // 1. Update State
         req.isFinalized = true;
         req.isAI = _isAI;
