@@ -202,6 +202,62 @@ describe("Veritas Protocol MVP Tests", function () {
             )
         ).to.be.revertedWith("Only aggregator can finalize");
     });
+
+    it("Double_Finalization: Aggregator cannot finalize the same request twice", async function () {
+        await veritasCore.connect(user).submitRequest("QmHashDouble");
+
+        // 1. First Finalization (Should work)
+        await veritasCore.connect(aggregator).finalizeResult(
+            0, true, 90, [miner1.address], [ethers.parseUnits("8", 18)]
+        );
+
+        // 2. Second Finalization (Should fail)
+        await expect(
+            veritasCore.connect(aggregator).finalizeResult(
+                0, true, 90, [miner1.address], [ethers.parseUnits("8", 18)]
+            )
+        ).to.be.revertedWith("Request already finalized");
+    });
+
+    it("Input_Validation: Revert if Miner and Reward arrays mismatch", async function () {
+        await veritasCore.connect(user).submitRequest("QmMismatch");
+
+        // Action: Send 2 Miners but only 1 Reward amount
+        // This simulates a bug in your off-chain script
+        await expect(
+            veritasCore.connect(aggregator).finalizeResult(
+                0, 
+                true, 
+                90, 
+                [miner1.address, miner2.address], // 2 Miners
+                [ethers.parseUnits("8", 18)]      // 1 Reward
+            )
+        ).to.be.revertedWith("Miners and Rewards mismatch");
+    });
+
+    it("Empty_Committee: Handles zero winning miners gracefully", async function () {
+        // Scenario: Everyone failed the honeypot
+        await veritasCore.connect(user).submitRequest("QmNoWinners");
+        
+        const contractBalBefore = await veritasToken.balanceOf(veritasCore.target);
+
+        // Action: Finalize with empty arrays
+        await veritasCore.connect(aggregator).finalizeResult(
+            0, 
+            false, // Real
+            0,     // 0 Confidence
+            [],    // No miners
+            []     // No rewards
+        );
+
+        // Check 1: Request is still finalized
+        const request = await veritasCore.requests(0);
+        expect(request.isFinalized).to.be.true;
+
+        // Check 2: No money left the contract (Balance stays same)
+        const contractBalAfter = await veritasToken.balanceOf(veritasCore.target);
+        expect(contractBalAfter).to.equal(contractBalBefore);
+    });
   });
 
   // =========================================================
