@@ -2,141 +2,181 @@
   {
     "id": "req_101",
     "hash": "Qm_USER_UPLOAD_PROFILE_PIC",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserA..."
+    "submitter": "0xUserA...",
+    "verdict": "REAL",
+    "confidence": 81
   },
   {
     "id": "req_102",
     "hash": "Qm_USER_UPLOAD_CRYPTO_SCAM_BANNER",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": true,
-    "submitter": "0xUserB..."
+    "submitter": "0xUserB...",
+    "verdict": "AI",
+    "confidence": 100
   },
   {
     "id": "req_103",
     "hash": "Qm_USER_UPLOAD_FAMILY_DOG",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserC..."
+    "submitter": "0xUserC...",
+    "verdict": "AI",
+    "confidence": 57
   },
   {
     "id": "req_104",
     "hash": "Qm_USER_UPLOAD_POLITICAL_DEEPFAKE",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": true,
-    "submitter": "0xUserD..."
+    "submitter": "0xUserD...",
+    "verdict": "AI",
+    "confidence": 75
   },
   {
     "id": "req_105",
     "hash": "Qm_USER_UPLOAD_NFT_ART",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": true,
-    "submitter": "0xUserE..."
+    "submitter": "0xUserE...",
+    "verdict": "AI",
+    "confidence": 100
   },
   {
     "id": "req_106",
     "hash": "Qm_USER_UPLOAD_DRIVER_LICENSE",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserF..."
+    "submitter": "0xUserF...",
+    "verdict": "REAL",
+    "confidence": 50
   },
   {
     "id": "req_107",
     "hash": "Qm_USER_UPLOAD_CCTV_FOOTAGE_FRAME",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserG..."
+    "submitter": "0xUserG...",
+    "verdict": "REAL",
+    "confidence": 80
   },
   {
     "id": "req_108",
     "hash": "Qm_USER_UPLOAD_CEO_AUDIO_WAVEFORM",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": true,
-    "submitter": "0xUserH..."
+    "submitter": "0xUserH...",
+    "verdict": "AI",
+    "confidence": 75
   },
   {
     "id": "req_109",
     "hash": "Qm_USER_UPLOAD_VACATION_BEACH",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserI..."
+    "submitter": "0xUserI...",
+    "verdict": "REAL",
+    "confidence": 100
   },
   {
     "id": "req_110",
     "hash": "Qm_USER_UPLOAD_STOCK_MARKET_GRAPH",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": true,
-    "submitter": "0xUserJ..."
+    "submitter": "0xUserJ...",
+    "verdict": "AI",
+    "confidence": 77
   },
   {
     "id": "req_111",
     "hash": "Qm_USER_UPLOAD_INSTAGRAM_FILTERED",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserK..."
+    "submitter": "0xUserK...",
+    "verdict": "REAL",
+    "confidence": 71
   },
   {
     "id": "req_112",
     "hash": "Qm_USER_UPLOAD_MIDJOURNEY_V6_TEST",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": true,
-    "submitter": "0xUserL..."
+    "submitter": "0xUserL...",
+    "verdict": "AI",
+    "confidence": 100
   },
   {
     "id": "req_113",
     "hash": "Qm_USER_UPLOAD_OLD_SCANNED_PHOTO",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserM..."
+    "submitter": "0xUserM...",
+    "verdict": "REAL",
+    "confidence": 50
   },
   {
     "id": "req_114",
     "hash": "Qm_USER_UPLOAD_DEEPFAKE_PORN_BOT",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": true,
-    "submitter": "0xUserN..."
+    "submitter": "0xUserN...",
+    "verdict": "AI",
+    "confidence": 80
   },
   {
     "id": "req_115",
     "hash": "Qm_USER_UPLOAD_NEWS_EVENT_CROWD",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": true,
-    "submitter": "0xUserO..."
+    "submitter": "0xUserO...",
+    "verdict": "AI",
+    "confidence": 100
   },
   {
     "id": "req_116",
     "hash": "Qm_USER_UPLOAD_RECEIPT_SCAN",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserP..."
+    "submitter": "0xUserP...",
+    "verdict": "REAL",
+    "confidence": 100
   },
   {
     "id": "req_117",
     "hash": "Qm_USER_UPLOAD_AI_INFLUENCER",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": true,
-    "submitter": "0xUserQ..."
+    "submitter": "0xUserQ...",
+    "verdict": "AI",
+    "confidence": 72
   },
   {
     "id": "req_118",
     "hash": "Qm_USER_UPLOAD_DASHCAM_VIDEO_FRAME",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserR..."
+    "submitter": "0xUserR...",
+    "verdict": "REAL",
+    "confidence": 76
   },
   {
     "id": "req_119",
     "hash": "Qm_USER_UPLOAD_GAME_SCREENSHOT",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserS..."
+    "submitter": "0xUserS...",
+    "verdict": "REAL",
+    "confidence": 100
   },
   {
     "id": "req_120",
     "hash": "Qm_USER_UPLOAD_VOICE_MEMO_SPECTRO",
-    "status": "pending",
+    "status": "verified",
     "trueLabel": false,
-    "submitter": "0xUserT..."
+    "submitter": "0xUserT...",
+    "verdict": "REAL",
+    "confidence": 62
   }
 ]

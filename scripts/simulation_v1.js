@@ -2,14 +2,15 @@ const hre = require("hardhat");
 const fs = require("fs");
 const path = require("path");
 
-// Mock data generation if files don't exist (PREVENTS CRASHES DURING DEMO)
+// DATA PATHS
+const DATA_DIR = path.join(__dirname, "../data");
+const TEST_POOL_PATH = path.join(DATA_DIR, "test_pool.json");
+const REQUEST_POOL_PATH = path.join(DATA_DIR, "request_pool.json");
+
+// Default Mock Data (Fallback)
 const MOCK_POOL = [
-    { hash: "QmImage123", trueLabel: true, status: "pending" }, 
-    { hash: "QmImage456", trueLabel: false, status: "pending" }
-];
-const MOCK_HONEYPOT = [
-    { id: 1, isAI: true }, { id: 2, isAI: false }, 
-    { id: 3, isAI: true }, { id: 4, isAI: false }
+    { hash: "QmDefault1", trueLabel: true, status: "pending" }, 
+    { hash: "QmDefault2", trueLabel: false, status: "pending" }
 ];
 
 async function main() {
@@ -20,19 +21,18 @@ async function main() {
   // ====================================================
   const signers = await hre.ethers.getSigners();
   const [deployer, aggregator, user, ...others] = signers;
-  const minerWallets = others.slice(0, 5); // Use 5 miners for clean demo output
+  const minerWallets = others.slice(0, 5); 
 
-  console.log(`> Deploying with Account: ${deployer.address}`);
-  console.log(`> Aggregator Address:     ${aggregator.address}`);
+  console.log(`> Deploying contracts...`);
 
   // Deploy Token
   const Token = await hre.ethers.getContractFactory("VeritasToken");
-  const token = await Token.deploy(1000000); // 1M Supply
+  const token = await Token.deploy(1000000); 
   await token.waitForDeployment();
 
   // Deploy Registry
   const Registry = await hre.ethers.getContractFactory("MinerRegistry");
-  const registry = await Registry.deploy(token.target, 100); // 100 VRT Min Stake
+  const registry = await Registry.deploy(token.target, 100); 
   await registry.waitForDeployment();
 
   // Deploy Core
@@ -43,57 +43,60 @@ async function main() {
 
   console.log(`✅ Contracts Deployed. Core: ${core.target}\n`);
 
-  // ====================================================
-  // 2. MINER REGISTRATION
-  // ====================================================
+  // Register Miners
   console.log(`--- 👷 Registering ${minerWallets.length} Miners ---`);
   const stakeAmount = hre.ethers.parseUnits("100", 18);
-
   for (const m of minerWallets) {
-      // 1. Give them money
       await token.transfer(m.address, stakeAmount * 5n); 
-      // 2. They approve Registry
       await token.connect(m).approve(registry.target, stakeAmount);
-      // 3. They register
       await registry.connect(m).registerMiner(stakeAmount);
   }
-  console.log("✅ Miners Staked & Registered.\n");
+  console.log("✅ Miners Ready.\n");
 
   // ====================================================
-  // 3. LOAD DATA (Or use Mock)
+  // 2. DATA SEEDING (TEST_POOL -> REQUEST_POOL)
   // ====================================================
-  // This ensures your assignment demo works even if you forget the JSON files
-  let requestPool = MOCK_POOL;
   
-  try {
-      if(fs.existsSync(path.join(__dirname, "../data/request_pool.json"))) {
-          requestPool = JSON.parse(fs.readFileSync(path.join(__dirname, "../data/request_pool.json"), "utf8"));
-      }
-  } catch(e) { console.log("⚠️  Using Mock Data for Requests"); }
+  // Ensure data directory exists
+  if (!fs.existsSync(DATA_DIR)){ fs.mkdirSync(DATA_DIR); }
 
-  // Filter for pending work
-  const pendingRequests = requestPool.filter(r => r.status === "pending");
-  if (pendingRequests.length === 0) { console.log("No pending requests to process."); return; }
+  let currentRequests = [];
+
+  // STEP A: Read from test_pool.json if it exists
+  if (fs.existsSync(TEST_POOL_PATH)) {
+      console.log(`📂 Reading requests from test_pool.json...`);
+      const testData = JSON.parse(fs.readFileSync(TEST_POOL_PATH, "utf8"));
+      currentRequests = testData;
+      
+      // STEP B: Write to request_pool.json (Simulating DB update)
+      fs.writeFileSync(REQUEST_POOL_PATH, JSON.stringify(currentRequests, null, 2));
+      console.log(`💾 Seeded request_pool.json with ${currentRequests.length} images.`);
+  } else {
+      console.log(`⚠️ test_pool.json not found. Using Mock Data.`);
+      currentRequests = MOCK_POOL;
+  }
+
+  // Filter for pending
+  const pendingRequests = currentRequests.filter(r => r.status === "pending");
+  if (pendingRequests.length === 0) { console.log("No pending requests."); return; }
 
   // ====================================================
-  // 4. THE CORE LOOP (The Whitepaper Logic)
+  // 3. THE CORE LOOP
   // ====================================================
-  console.log(`--- 🎲 PROCESSING ${pendingRequests.length} REQUESTS (BLIND BATCHING) ---`);
+  console.log(`\n--- 🎲 PROCESSING ${pendingRequests.length} REQUESTS ---`);
 
-  // Fund User - INCREASED FUNDING TO PREVENT CRASHES (100x fee)
+  // Fund User High Enough to avoid crash
   await token.transfer(user.address, fee * 100n);
   await token.connect(user).approve(core.target, fee * 100n);
 
   for (const userReq of pendingRequests) {
       console.log(`\n🔹 Processing Image Hash: ${userReq.hash}`);
 
-      // A. USER SUBMITS (With Error Handling)
-      let receipt, chainRequestId;
+      // A. SUBMIT
+      let chainRequestId;
       try {
           const tx = await core.connect(user).submitRequest(userReq.hash);
-          receipt = await tx.wait();
-          
-          // Parse logs to find Request ID
+          const receipt = await tx.wait();
           for(const log of receipt.logs) {
               try {
                   const parsed = core.interface.parseLog(log);
@@ -105,50 +108,38 @@ async function main() {
           }
           console.log(`   [Chain] Request ID #${chainRequestId} created.`);
       } catch (error) {
-          console.error(`   ❌ Transaction Failed: ${error.message}`);
-          continue; // Skip to the next request if this one fails
+          console.error(`   ❌ Submission Failed: ${error.message}`);
+          continue;
       }
 
-      // B. OFF-CHAIN: AGGREGATOR BATCHES IMAGES
+      // B. MINER WORK (Simulated)
       const batchSize = 3; 
-
-      // C. OFF-CHAIN: MINERS DO WORK
       let minerReports = [];
       
       for (const miner of minerWallets) {
-          // Simulation: Each miner has a different "skill" level
-          // Miner 0 is an expert (95%), Miner 4 is lazy (40%)
           const skill = 0.95 - (minerWallets.indexOf(miner) * 0.15); 
           
           let honeypotScore = 0;
-          // Simulate grading 3 honeypots
-          for(let i=0; i<batchSize; i++) {
-              if(Math.random() < skill) honeypotScore++;
-          }
+          for(let i=0; i<batchSize; i++) { if(Math.random() < skill) honeypotScore++; }
 
-          // Simulate grading the User's Image
           const getsUserImageRight = Math.random() < skill;
           const vote = getsUserImageRight ? userReq.trueLabel : !userReq.trueLabel;
 
           minerReports.push({
               address: miner.address,
-              accuracy: honeypotScore / batchSize, // 0.0 to 1.0
-              vote: vote,
-              wallet: miner
+              accuracy: honeypotScore / batchSize,
+              vote: vote
           });
       }
 
-      // D. OFF-CHAIN: AGGREGATOR CONSENSUS
-      // Filter out miners who failed the honeypot (Accuracy < 60%)
+      // C. CONSENSUS
       const passingMiners = minerReports.filter(m => m.accuracy > 0.6);
-      console.log(`   [Consensus] ${passingMiners.length}/${minerWallets.length} miners passed the Honeypot check.`);
-
       let aiWeight = 0, realWeight = 0;
       const winningAddresses = [];
 
       for(const m of passingMiners) {
           winningAddresses.push(m.address);
-          if(m.vote === true) aiWeight += m.accuracy; // Weighted by their accuracy
+          if(m.vote === true) aiWeight += m.accuracy;
           else realWeight += m.accuracy;
       }
 
@@ -157,36 +148,40 @@ async function main() {
           ? Math.floor((Math.max(aiWeight, realWeight) / (aiWeight + realWeight)) * 100)
           : 0;
 
-      console.log(`   [Verdict] ${isAI ? "AI GENERATED 🤖" : "REAL IMAGE 📸"} (Confidence: ${confidence}%)`);
+      const verdictString = isAI ? "AI" : "REAL";
+      console.log(`   [Verdict] ${verdictString} (Confidence: ${confidence}%)`);
 
-      // E. ON-CHAIN: FINALIZE & PAYOUT
+      // D. UPDATE JSON OBJECT (In Memory)
+      userReq.status = "verified";
+      userReq.verdict = verdictString;
+      userReq.confidence = confidence;
+
+      // E. FINALIZE ON CHAIN
       try {
           const finalizeTx = await core.connect(aggregator).finalizeResult(
-              chainRequestId,
-              isAI,
-              confidence,
-              winningAddresses
+              chainRequestId, isAI, confidence, winningAddresses
           );
           await finalizeTx.wait();
-          console.log(`   [Chain] Result finalized & Rewards distributed.`);
-      } catch (err) {
-          console.error(`   ❌ Finalization Failed: ${err.message}`);
-      }
+          console.log(`   [Chain] Finalized.`);
+      } catch (err) { console.error(`   ❌ Finalization Failed: ${err.message}`); }
 
-      // F. ON-CHAIN: UPDATE REPUTATION
-      // The Aggregator (or Owner) updates the registry
+      // F. UPDATE REPUTATION
       for(const report of minerReports) {
           const passed = report.accuracy > 0.6;
-          // Note: In this script 'deployer' is owner. In prod, transfer ownership to aggregator.
           await registry.connect(deployer).updateMinerPerformance(report.address, passed);
       }
   }
 
-  // Final Stats Check
-  console.log("\n--- 🏆 FINAL MINER STATS ---");
-  const stats = await registry.getMinerStats(minerWallets[0].address);
-  console.log(`Miner 1 (Expert) - Rep: ${stats[0]}, Wins: ${stats[1]}, Losses: ${stats[2]}`);
-  
+  // ====================================================
+  // 4. SAVE RESULTS TO FILE
+  // ====================================================
+  // This is the step that makes your project look like a real app!
+  // It writes the 'verified' status back to the file.
+  if (fs.existsSync(REQUEST_POOL_PATH)) {
+      fs.writeFileSync(REQUEST_POOL_PATH, JSON.stringify(currentRequests, null, 2));
+      console.log(`\n💾 UPDATED request_pool.json with final verdicts.`);
+  }
+
   console.log("\n🏁 DEMO COMPLETE");
 }
 
