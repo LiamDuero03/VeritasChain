@@ -88,6 +88,26 @@ contract MinerRegistry is Ownable {
         emit ReputationUpdated(_minerAddress, m.reputationScore, _passedHoneypot);
     }
 
+    // --- RE-ADDED MISSING FUNCTION ---
+    function slashMiner(address _minerAddress, uint256 _amount, string memory _reason) external onlyOwner {
+        require(miners[_minerAddress].isRegistered, "Miner not found");
+        require(miners[_minerAddress].stakedAmount >= _amount, "Stake too low to slash");
+
+        // 1. Reduce Stake
+        miners[_minerAddress].stakedAmount -= _amount;
+        
+        // 2. Burn the tokens (Remove from total supply)
+        // Note: The registry holds the tokens, so it must be the one to burn them.
+        token.burn(_amount);
+
+        // 3. Auto-kick if below minimum
+        if (miners[_minerAddress].stakedAmount < minimumStake) {
+            miners[_minerAddress].isRegistered = false;
+        }
+
+        emit MinerSlashed(_minerAddress, _amount, _reason);
+    }
+
     function getMinerStats(address _miner) external view returns (uint256 score, uint256 wins, uint256 losses) {
         return (miners[_miner].reputationScore, miners[_miner].successfulJobs, miners[_miner].failedJobs);
     }
