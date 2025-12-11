@@ -1,11 +1,13 @@
 
+
+````markdown
 # 🛡️ Veritas Protocol: Decentralized AI Verification
 
 Veritas is a blockchain-based protocol that crowdsources the detection of AI-generated content. It utilizes a **Game Theoretic "Honeypot" Mechanism** to ensure miners (validators) classify images accurately without needing a central authority to verify every result.
 
 This Proof of Concept (PoC) demonstrates a hybrid architecture:
-1.  **On-Chain:** Trustless payments, staking, and immutable record-keeping.
-2.  **Off-Chain:** High-performance AI processing and "Honeypot" consensus logic.
+1.  **On-Chain:** Trustless payments, staking, immutable record-keeping, and proportional reward distribution.
+2.  **Off-Chain:** High-performance AI processing and "Double-Blind" consensus logic.
 
 ---
 
@@ -18,10 +20,10 @@ The protocol solves the "lazy validator" problem using a **Double-Blind** test:
     * The User's Image (Unknown state).
     * X "Honeypot" Images (Known state: AI or Real).
 3.  **Mining:** Miners classify the *entire* bundle. They do not know which image is the target and which are the honeypots.
-4.  **Consensus:**
-    * Miners who fail the honeypots are ignored (and can be slashed).
-    * Miners who pass are assigned a **Confidence Weight**.
-    * The final verdict is a **Weighted Average** of the passing miners.
+4.  **Consensus & Rewards:**
+    * **Filtering:** Miners who fail the honeypots are ignored.
+    * **Selection:** Only the top-performing committee (e.g., Top 3) is selected.
+    * **Proportional Payout:** Rewards are distributed based on accuracy (better performance = higher payout).
 
 ---
 
@@ -31,9 +33,9 @@ The system relies on three interconnected contracts found in `contracts/`:
 
 | Contract | Role | Key Functionality |
 | :--- | :--- | :--- |
-| `VeritasToken.sol` | **Economy** | ERC-20 Standard. Used for staking (skin-in-the-game) and fee payments. Includes `burn` logic for slashing bad actors. |
-| `MinerRegistry.sol` | **Governance** | Manages miner identities. Enforces minimum stake requirements. Tracks reputation scores and handles slashing logic. |
-| `VeritasCore.sol` | **Orchestration** | The central ledger. Receives user requests, holds fees, and accepts the final consensus result from the Aggregator to distribute rewards. |
+| `VeritasToken.sol` | **Economy** | ERC-20 Standard. Used for staking (skin-in-the-game) and fee payments. |
+| `MinerRegistry.sol` | **Governance** | Manages miner identities and enforces minimum stake requirements. Tracks on-chain **Reputation Scores** (Wins/Losses). |
+| `VeritasCore.sol` | **Orchestration** | The central ledger. Receives user requests, holds fees, and accepts the final consensus result from the Aggregator to distribute **Proportional Rewards**. |
 
 ---
 
@@ -42,14 +44,17 @@ The system relies on three interconnected contracts found in `contracts/`:
 ```text
 /contracts
   ├── VeritasToken.sol    # The Currency
-  ├── MinerRegistry.sol   # The Workers
-  └── VeritasCore.sol     # The Manager
+  ├── MinerRegistry.sol   # The Workers & Reputation
+  └── VeritasCore.sol     # The Logic & Payouts
+
 /scripts
-  ├── deploy.js           # Deploys the suite
-  ├── miner_bot.js        # Simulates AI Miners (Registers & Listens)
-  ├── aggregator.js       # Simulates the Oracle/Consensus Node
-  └── user_submit.js      # Simulates a User paying for verification
-```
+  └── simulation_v1.js    # MASTER SIMULATION (Deploys, Registers, Runs Consensus)
+
+/data
+  ├── test_pool.json      # Input data (Images to verify)
+  └── request_pool.json   # Output data (Final verdicts stored here)
+````
+
 -----
 
 ## 🛠️ Setup and Installation
@@ -59,10 +64,11 @@ The system relies on three interconnected contracts found in `contracts/`:
 
     ```bash
     npm install
-    npm install @openzeppelin/contracts
+    npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox @openzeppelin/contracts
     ```
 
 2.  **Compile Contracts:**
+    Ensure the Solidity code compiles correctly.
 
     ```bash
     npx hardhat compile
@@ -70,80 +76,46 @@ The system relies on three interconnected contracts found in `contracts/`:
 
 -----
 
-## 🔬 Running the Proof of Concept
+## 🔬 Running the Proof of Concept (End-to-End Demo)
 
-This PoC simulates a live network with multiple actors. You will need **4 separate terminal windows** to see the full flow.
+For this MVP, the entire protocol lifecycle—from deployment to miner registration, user submission, and consensus—is consolidated into a single **Simulation Script**. This proves the logic works end-to-end without needing to manage multiple terminal windows.
 
-### Step 1: Start the Local Blockchain
-
-**[Terminal 1]**
-Start the Hardhat node. This creates a local blockchain and 20 test wallets.
+**Run the full system demonstration:**
 
 ```bash
-npx hardhat node
+npx hardhat run scripts/simulation_v1.js
 ```
 
-*Keep this terminal running.*
+### 📊 What You Will See (Expected Output)
 
-### Step 2: Deploy Contracts
+The script simulates a live network processing a batch of images. Watch the terminal for these key events:
 
-**[Terminal 2]**
-Deploy the smart contracts.
-
-```bash
-npx hardhat run scripts/deploy.js --network localhost
-```
-
-⚠️ **IMPORTANT:** Copy the `VeritasToken`, `MinerRegistry`, and `VeritasCore` addresses output by this script. You **must** paste them into the top of `miner_bot.js`, `aggregator.js`, and `user_submit.js` before proceeding.
-
-### Step 3: Start the Miners
-
-**[Terminal 2]**
-Run the bot script. This simulates 3 miners:
-
-  * Miner A (High Accuracy)
-  * Miner B (High Accuracy)
-  * Miner C (Malicious/Low Accuracy)
-    It will stake tokens, register them, and wait for work.
-
-<!-- end list -->
-
-```bash
-npx hardhat run scripts/miner_bot.js --network localhost
-```
-
-### Step 4: Start the Aggregator
-
-**[Terminal 3]**
-Run the aggregator node. This listens for user requests, distributes "Honeypot" bundles, and calculates consensus.
-
-```bash
-npx hardhat run scripts/aggregator.js --network localhost
-```
-
-### Step 5: Submit a Request (The User)
-
-**[Terminal 4]**
-Simulate a user paying $VRT to verify an image.
-
-```bash
-npx hardhat run scripts/user_submit.js --network localhost
-```
+1.  **Deployment:** Contracts are deployed and linked.
+2.  **Registration:** 10 Miners stake `$VRT` to join the network.
+3.  **Blind Batching:** Each request is processed against 10 "Honeypot" images.
+4.  **Consensus:** The system sorts miners by accuracy and selects the **Top 3**.
+5.  **Proportional Payout:**
+    ```text
+    [Payout] 💰 Proportional Rewards (Based on Accuracy):
+       -> Miner 0x123... (100% Acc) received 2.8571 VRT
+       -> Miner 0x456... (90% Acc) received 2.5714 VRT
+    ```
+6.  **Economic Security:**
+      * If a user runs out of funds, the script catches the `ERC20InsufficientAllowance` error, proving the contract correctly rejects unpaid work.
 
 -----
 
-## ✅ Expected Output Flow
+## 📝 Data Seeding (Optional)
 
-1.  **Terminal 4 (User):** "Request Submitted\!"
-2.  **Terminal 2 (Miners):** "[MINER BOT] Detected Request... Waiting for bundle."
-3.  **Terminal 3 (Aggregator):**
-      * `[NEW REQUEST DETECTED]`
-      * `Dispatching to 3 miners...`
-      * `Miner A: Pass` | `Miner B: Pass` | `Miner C: REJECTED (Low Accuracy)`
-      * `> Consensus Reached: AI GENERATED`
-      * `[TX] Result Finalized on-chain`
+To test specific scenarios, you can add custom "images" to `data/test_pool.json`:
 
-This proves the **Economic Flow** (Fees -\> Rewards) and the **Consensus Logic** (Filtering bad actors via Honeypots).
+```json
+[
+  { "hash": "Qm_My_Test_Image", "trueLabel": true, "status": "pending" }
+]
+```
+
+The simulation will automatically load these files, process them on the blockchain, and write the final verdict (AI/Real) to `data/request_pool.json`.
 
 ```
 ```
