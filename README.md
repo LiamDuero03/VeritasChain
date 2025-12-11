@@ -1,6 +1,4 @@
 
-
-````markdown
 # 🛡️ Veritas Protocol: Decentralized AI Verification
 
 Veritas is a blockchain-based protocol that crowdsources the detection of AI-generated content. It utilizes a **Game Theoretic "Honeypot" Mechanism** to ensure miners (validators) classify images accurately without needing a central authority to verify every result.
@@ -53,7 +51,7 @@ The system relies on three interconnected contracts found in `contracts/`:
 /data
   ├── test_pool.json      # Input data (Images to verify)
   └── request_pool.json   # Output data (Final verdicts stored here)
-````
+```
 
 -----
 
