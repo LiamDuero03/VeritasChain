@@ -116,4 +116,3 @@ To test specific scenarios, you can add custom "images" to `data/test_pool.json`
 The simulation will automatically load these files, process them on the blockchain, and write the final verdict (AI/Real) to `data/request_pool.json`.
 
 ```
-```
