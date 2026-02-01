@@ -1,5 +1,5 @@
 
-# 🛡️ Veritas Protocol: Decentralized AI Verification
+# Veritas Protocol: Decentralized AI Verification
 
 Veritas is a blockchain-based protocol that crowdsources the detection of AI-generated content. It utilizes a **Game Theoretic "Honeypot" Mechanism** to ensure miners (validators) classify images accurately without needing a central authority to verify every result.
 
@@ -9,7 +9,7 @@ This Proof of Concept (PoC) demonstrates a hybrid architecture:
 
 ---
 
-## 🧠 Core Mechanics: The Honeypot System
+## Core Mechanics: The Honeypot System
 
 The protocol solves the "lazy validator" problem using a **Double-Blind** test:
 
@@ -25,7 +25,7 @@ The protocol solves the "lazy validator" problem using a **Double-Blind** test:
 
 ---
 
-## 📜 Smart Contract Architecture
+## Smart Contract Architecture
 
 The system relies on three interconnected contracts found in `contracts/`:
 
@@ -37,7 +37,7 @@ The system relies on three interconnected contracts found in `contracts/`:
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 /contracts
@@ -55,7 +55,7 @@ The system relies on three interconnected contracts found in `contracts/`:
 
 -----
 
-## 🛠️ Setup and Installation
+## Setup and Installation
 
 1.  **Install Dependencies:**
     This project uses Hardhat and OpenZeppelin.
@@ -74,7 +74,7 @@ The system relies on three interconnected contracts found in `contracts/`:
 
 -----
 
-## 🔬 Running the Proof of Concept (End-to-End Demo)
+## Running the Proof of Concept (End-to-End Demo)
 
 For this MVP, the entire protocol lifecycle—from deployment to miner registration, user submission, and consensus—is consolidated into a single **Simulation Script**. This proves the logic works end-to-end without needing to manage multiple terminal windows.
 
@@ -84,7 +84,7 @@ For this MVP, the entire protocol lifecycle—from deployment to miner registrat
 npx hardhat run scripts/simulation_v1.js
 ```
 
-### 📊 What You Will See (Expected Output)
+### What You Will See (Expected Output)
 
 The script simulates a live network processing a batch of images. Watch the terminal for these key events:
 
@@ -103,7 +103,7 @@ The script simulates a live network processing a batch of images. Watch the term
 
 -----
 
-## 📝 Data Seeding (Optional)
+## Data Seeding (Optional)
 
 To test specific scenarios, you can add custom "images" to `data/test_pool.json`:
 
